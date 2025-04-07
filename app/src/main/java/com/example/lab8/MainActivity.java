@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        serviceIntent = new Intent(this, MyService.class);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             checkAndRequestPermissions();
@@ -67,6 +67,9 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Ошибка остановки сервиса: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
+
+    public void nextActivity(View view) {
+        Intent intent = new Intent(this, MainActivity2.class);
+        startActivity(intent);
+    }
 }
-
-
