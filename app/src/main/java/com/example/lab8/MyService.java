@@ -1,7 +1,8 @@
 package com.example.lab8;
 
 import android.annotation.SuppressLint;
-
+import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
@@ -12,8 +13,8 @@ import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
-
-
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
 
 public class MyService extends Service {
 
@@ -38,7 +39,6 @@ public class MyService extends Service {
             Toast.makeText(this, "Ошибка: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
-
 
     @SuppressLint("ForegroundServiceType")
     @Override
@@ -78,4 +78,33 @@ public class MyService extends Service {
 
         return START_STICKY;
     }
+
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            String channelName = "Канал сервиса";
+            String channelDescription = "Музыкальный канал";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, channelName, importance);
+            channel.setDescription(channelDescription);
+
+            notificationManager = getSystemService(NotificationManager.class);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+                Log.d(TAG, "createNotificationChannel: Канал уведомлений создан");
+            } else {
+                Log.w(TAG, "createNotificationChannel: NotificationManager не доступен");
+            }
+        }
+    }
+
+    private Notification buildNotification() {
+        return new NotificationCompat.Builder(this, CHANNEL_ID)
+
+                .setContentTitle("Мой музыкальный плеер")
+                .setContentText("Проигрывается звук")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .build();
+    }
+
 }
