@@ -100,11 +100,32 @@ public class MyService extends Service {
 
     private Notification buildNotification() {
         return new NotificationCompat.Builder(this, CHANNEL_ID)
-
+                .setSmallIcon(R.drawable.ic_music)
                 .setContentTitle("Мой музыкальный плеер")
                 .setContentText("Проигрывается звук")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .build();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy: Остановка сервиса");
+
+        isPlaying = false;
+
+        if (toneGenerator != null) {
+            toneGenerator.release();
+            toneGenerator = null;
+            Log.d(TAG, "onDestroy: ToneGenerator освобожден");
+        }
+
+        Toast.makeText(this, "Сервер остановлен", Toast.LENGTH_SHORT).show();
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
 }
